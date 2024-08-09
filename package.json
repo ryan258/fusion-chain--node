@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node fusion-chain-demo.js",
-    "multi-agent": "node multi-agent-analysis-demo.js"
+    "multi-agent": "node multi-agent-analysis-demo.js",
+    "creative-writing": "node creative-writing-demo.js"
   },
   "keywords": [],
   "author": "",

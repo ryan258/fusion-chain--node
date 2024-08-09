@@ -1,6 +1,6 @@
 # FusionChain
 
-FusionChain is a Node.js library for running and evaluating multiple AI models or agents on a series of prompts. It allows for easy comparison and fusion of different model outputs, making it ideal for ensemble learning, multi-agent systems, and model evaluation in natural language processing tasks.
+FusionChain is a Node.js library for running and evaluating multiple AI models or agents on a series of prompts. It allows for easy comparison and fusion of different model outputs, making it ideal for ensemble learning, multi-agent systems, and model evaluation in various natural language processing tasks.
 
 ## Features
 
@@ -10,7 +10,7 @@ FusionChain is a Node.js library for running and evaluating multiple AI models o
 - Support for both synchronous and parallel execution (parallel execution coming soon)
 - Easy-to-use API for integrating with various AI models and evaluation metrics
 - Demonstration with Ollama for local AI model interaction
-- Flexible architecture supporting various use cases from summarization to multi-agent analysis
+- Flexible architecture supporting various use cases from summarization to multi-agent analysis and creative writing
 
 ## Prerequisites
 
@@ -38,10 +38,11 @@ FusionChain is a Node.js library for running and evaluating multiple AI models o
 
 ## Usage
 
-The project includes two demos that showcase how to use FusionChain with Ollama:
+The project includes three demos that showcase how to use FusionChain with Ollama:
 
 1. Text Summarization Demo
 2. Multi-Agent Analysis Demo
+3. Creative Writing Collaboration Demo
 
 ### Running the Demos
 
@@ -55,6 +56,11 @@ The project includes two demos that showcase how to use FusionChain with Ollama:
 3. Run the multi-agent analysis demo:
    ```
    npm run multi-agent
+   ```
+
+4. Run the creative writing collaboration demo:
+   ```
+   npm run creative-writing
    ```
 
 ### Text Summarization Demo
@@ -77,6 +83,16 @@ This demo in `multi-agent-analysis-demo.js` showcases:
    - Initial analysis of the text
    - Focused insight or recommendation based on the initial analysis
 3. Utilization of FusionChain to manage multiple agents and evaluate their outputs.
+
+### Creative Writing Collaboration Demo
+
+This demo in `creative-writing-demo.js` illustrates:
+
+1. Four different writing styles (Descriptive, Dialogue-focused, Action-oriented, Character-driven) applied to the same story context.
+2. A series of three creative writing tasks: generating dialogue, describing settings, and writing action sequences.
+3. Use of a shared story context across all prompts and models.
+4. A simple evaluation function that considers both length and the presence of relevant keywords.
+5. How FusionChain can be applied to creative tasks, allowing for the collaboration of different writing styles and the generation of varied story elements.
 
 ## API Reference
 
@@ -113,6 +129,7 @@ Returns an array `[outputs, contextFilledPrompts]`.
 You can customize the demos by modifying:
 
 - The text to be summarized or analyzed
+- The story context and prompts for creative writing
 - The system prompts for each "model" or agent
 - The evaluation criteria in the `evaluator` function
 - The prompts used for each task
@@ -132,4 +149,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgments
 
 - This project uses Ollama for local AI model interactions.
-- Inspired by the concept of fusion algorithms and multi-agent systems in AI.
+- Inspired by the concept of fusion algorithms, multi-agent systems, and collaborative creativity in AI.
