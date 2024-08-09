@@ -1,15 +1,16 @@
 # FusionChain
 
-FusionChain is a Node.js library for running and evaluating multiple AI models on a series of prompts. It allows for easy comparison and fusion of different model outputs, making it ideal for ensemble learning and model evaluation in natural language processing tasks.
+FusionChain is a Node.js library for running and evaluating multiple AI models or agents on a series of prompts. It allows for easy comparison and fusion of different model outputs, making it ideal for ensemble learning, multi-agent systems, and model evaluation in natural language processing tasks.
 
 ## Features
 
-- Run multiple AI models on a series of prompts
+- Run multiple AI models or agents on a series of prompts
 - Handle context and back-references in prompts
 - Evaluate model performances and select top responses
 - Support for both synchronous and parallel execution (parallel execution coming soon)
 - Easy-to-use API for integrating with various AI models and evaluation metrics
 - Demonstration with Ollama for local AI model interaction
+- Flexible architecture supporting various use cases from summarization to multi-agent analysis
 
 ## Prerequisites
 
@@ -37,20 +38,28 @@ FusionChain is a Node.js library for running and evaluating multiple AI models o
 
 ## Usage
 
-The project includes a demo that showcases how to use FusionChain with Ollama for text summarization. Here's how to run it:
+The project includes two demos that showcase how to use FusionChain with Ollama:
+
+1. Text Summarization Demo
+2. Multi-Agent Analysis Demo
+
+### Running the Demos
 
 1. Start your local Ollama server.
 
-2. Run the demo script:
+2. Run the text summarization demo:
    ```
    npm start
    ```
 
-This will run a text summarization task using three different system prompts with the 'llama3.1:latest' model, simulating different "models" for the task.
+3. Run the multi-agent analysis demo:
+   ```
+   npm run multi-agent
+   ```
 
-### Demo Overview
+### Text Summarization Demo
 
-The demo in `fusion-chain-demo.js` does the following:
+This demo in `fusion-chain-demo.js` does the following:
 
 1. Defines three "models" with different summarization styles (Concise, Detailed, Creative).
 2. Sets up a two-step summarization process:
@@ -58,6 +67,16 @@ The demo in `fusion-chain-demo.js` does the following:
    - Summary refinement
 3. Uses FusionChain to run these models and evaluate their outputs.
 4. Selects the best summary based on adherence to word limit and quality.
+
+### Multi-Agent Analysis Demo
+
+This demo in `multi-agent-analysis-demo.js` showcases:
+
+1. Five specialized AI agents (Linguist, Historian, Psychologist, Economist, Futurist) analyzing a text from different perspectives.
+2. A two-step analysis process for each agent:
+   - Initial analysis of the text
+   - Focused insight or recommendation based on the initial analysis
+3. Utilization of FusionChain to manage multiple agents and evaluate their outputs.
 
 ## API Reference
 
@@ -91,12 +110,16 @@ Returns an array `[outputs, contextFilledPrompts]`.
 
 ## Customization
 
-You can customize the demo by modifying:
+You can customize the demos by modifying:
 
-- The text to be summarized
-- The system prompts for each "model"
+- The text to be summarized or analyzed
+- The system prompts for each "model" or agent
 - The evaluation criteria in the `evaluator` function
-- The prompts used for summarization
+- The prompts used for each task
+
+## Extending FusionChain
+
+FusionChain can be extended to work with various AI models and APIs. The `callable` function in the demos shows how to integrate with Ollama, but this can be adapted to work with other AI services or local models.
 
 ## Contributing
 
@@ -105,3 +128,8 @@ Contributions to FusionChain are welcome! Please feel free to submit a Pull Requ
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- This project uses Ollama for local AI model interactions.
+- Inspired by the concept of fusion algorithms and multi-agent systems in AI.
