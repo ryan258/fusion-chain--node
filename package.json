@@ -1,11 +1,12 @@
 {
   "name": "fusion-chain",
   "version": "1.0.0",
-  "description": "Demo project for FusionChain library",
+  "description": "Demo projects for FusionChain library",
   "main": "fusion-chain-demo.js",
   "type": "module",
   "scripts": {
-    "start": "node fusion-chain-demo.js"
+    "start": "node fusion-chain-demo.js",
+    "multi-agent": "node multi-agent-analysis-demo.js"
   },
   "keywords": [],
   "author": "",
