@@ -1,0 +1,16 @@
+{
+  "name": "fusion-chain",
+  "version": "1.0.0",
+  "description": "Demo project for FusionChain library",
+  "main": "fusion-chain-demo.js",
+  "type": "module",
+  "scripts": {
+    "start": "node fusion-chain-demo.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  }
+}
