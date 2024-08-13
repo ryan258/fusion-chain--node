@@ -11,7 +11,7 @@ const generateModels = (count) => {
 const models = generateModels(20);
 
 const context = {
-  task: "Analyze the impact of artificial intelligence on society"
+  task: "Analyze the existential conflict of artificial intelligence is likely to haveon society"
 };
 
 const prompts = [
