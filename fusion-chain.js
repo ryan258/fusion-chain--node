@@ -1,6 +1,9 @@
-// fusion-chain.js
+import { Worker } from 'worker_threads';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-import { promises as fs } from 'fs';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 class FusionChainResult {
   constructor(topResponse, allPromptResponses, allContextFilledPrompts, performanceScores, modelNames) {
@@ -13,15 +16,33 @@ class FusionChainResult {
 }
 
 class FusionChain {
-  static async run(context, models, callable, prompts, evaluator, getModelName) {
-    const allOutputs = [];
-    const allContextFilledPrompts = [];
+  static async runParallel(context, models, prompts, evaluator, getModelName, numWorkers = 4) {
+    const batchSize = Math.ceil(models.length / numWorkers);
+    const workerPromises = [];
 
-    for (const model of models) {
-      const [outputs, contextFilledPrompts] = await MinimalChainable.run(context, model, callable, prompts);
-      allOutputs.push(outputs);
-      allContextFilledPrompts.push(contextFilledPrompts);
+    for (let i = 0; i < models.length; i += batchSize) {
+      const batchModels = models.slice(i, i + batchSize);
+      workerPromises.push(
+        new Promise((resolve, reject) => {
+          const worker = new Worker('./worker.js', {
+            workerData: { 
+              context, 
+              models: batchModels, 
+              prompts
+            }
+          });
+          worker.on('message', resolve);
+          worker.on('error', reject);
+          worker.on('exit', (code) => {
+            if (code !== 0) reject(new Error(`Worker stopped with exit code ${code}`));
+          });
+        })
+      );
     }
+
+    const results = await Promise.all(workerPromises);
+    const allOutputs = results.flatMap(r => r.outputs);
+    const allContextFilledPrompts = results.flatMap(r => r.contextFilledPrompts);
 
     const lastOutputs = allOutputs.map(outputs => outputs[outputs.length - 1]);
     const [topResponse, performanceScores] = await evaluator(lastOutputs);
@@ -36,75 +57,6 @@ class FusionChain {
       modelNames
     );
   }
-
-  static async runParallel(context, models, callable, prompts, evaluator, getModelName, numWorkers = 4) {
-    // Implementation for parallel execution will be added later
-  }
 }
 
-class MinimalChainable {
-  static async run(context, model, callable, prompts) {
-    const output = [];
-    const contextFilledPrompts = [];
-
-    for (let i = 0; i < prompts.length; i++) {
-      let prompt = prompts[i];
-
-      for (const [key, value] of Object.entries(context)) {
-        prompt = prompt.replace(new RegExp(`{{${key}}}`, 'g'), String(value));
-      }
-
-      for (let j = i; j > 0; j--) {
-        const previousOutput = output[i - j];
-
-        if (typeof previousOutput === 'object' && previousOutput !== null) {
-          prompt = prompt.replace(new RegExp(`{{output\\[-${j}\\]}}`, 'g'), JSON.stringify(previousOutput));
-
-          for (const [key, value] of Object.entries(previousOutput)) {
-            prompt = prompt.replace(new RegExp(`{{output\\[-${j}\\]\\.${key}}}`, 'g'), String(value));
-          }
-        } else {
-          prompt = prompt.replace(new RegExp(`{{output\\[-${j}\\]}}`, 'g'), String(previousOutput));
-        }
-      }
-
-      contextFilledPrompts.push(prompt);
-
-      let result = await callable(model, prompt);
-
-      try {
-        const jsonMatch = result.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
-        if (jsonMatch) {
-          result = JSON.parse(jsonMatch[1]);
-        } else {
-          result = JSON.parse(result);
-        }
-      } catch (error) {
-        // Not JSON, keep as is
-      }
-
-      output.push(result);
-    }
-
-    return [output, contextFilledPrompts];
-  }
-
-  static async toDelimTextFile(name, content) {
-    let resultString = '';
-    const fileName = `${name}.txt`;
-
-    for (let i = 0; i < content.length; i++) {
-      let item = content[i];
-      if (typeof item === 'object') {
-        item = JSON.stringify(item);
-      }
-      const chainTextDelim = `${'🔗'.repeat(i + 1)} -------- Prompt Chain Result #${i + 1} -------------\n\n`;
-      resultString += chainTextDelim + item + '\n\n';
-    }
-
-    await fs.writeFile(fileName, resultString);
-    return resultString;
-  }
-}
-
-export { FusionChainResult, FusionChain, MinimalChainable };
+export { FusionChainResult, FusionChain };

@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node fusion-chain-demo.js",
     "multi-agent": "node multi-agent-analysis-demo.js",
-    "creative-writing": "node creative-writing-demo.js"
+    "creative-writing": "node creative-writing-demo.js",
+    "parallel": "node parallel-execution-demo.js"
   },
   "keywords": [],
   "author": "",
