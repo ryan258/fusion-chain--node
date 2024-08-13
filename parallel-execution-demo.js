@@ -1,37 +1,50 @@
-// File: parallel-execution-demo.js
-
 import { FusionChain } from './fusion-chain.js';
-import fetch from 'node-fetch';
+import fs from 'fs/promises';
 
-// Generate a large number of models
 const generateModels = (count) => {
   return Array.from({ length: count }, (_, i) => ({
     name: `Model ${i + 1}`,
-    systemPrompt: `You are an AI assistant with a unique perspective. Your ID is ${i + 1}.`
+    systemPrompt: `You are AI assistant ${i + 1}, an expert in analyzing societal impacts of technology.`
   }));
 };
 
-const models = generateModels(20); // Generate 20 models
+const models = generateModels(20);
 
 const context = {
-  task: "Analyze the impact of artificial intelligence on society",
+  task: "Analyze the impact of artificial intelligence on society"
 };
 
 const prompts = [
   "Provide a brief analysis of the {{task}} from your unique perspective.",
-  "Based on your previous analysis, suggest one policy recommendation.",
+  "Based on your previous analysis '{{output[-1]}}', suggest one specific policy recommendation."
 ];
 
 async function evaluator(outputs) {
-  // Simple evaluation based on length and keyword presence
   const scores = outputs.map(output => {
     const wordCount = output.split(/\s+/).length;
-    const keywordScore = ['AI', 'society', 'impact', 'future', 'technology']
+    const keywordScore = ['AI', 'society', 'impact', 'policy', 'recommendation', 'analysis']
       .filter(keyword => output.toLowerCase().includes(keyword)).length;
-    return (wordCount >= 50 && wordCount <= 200 ? 1 : 0) + keywordScore * 0.2;
+    const structureScore = output.includes('Based on') ? 0.5 : 0;
+    return (wordCount >= 100 && wordCount <= 300 ? 1 : 0) + keywordScore * 0.2 + structureScore;
   });
   const topResponse = outputs[scores.indexOf(Math.max(...scores))];
   return [topResponse, scores];
+}
+
+async function writeResultsToFile(results) {
+  let logContent = "Detailed Results:\n\n";
+  
+  results.allPromptResponses.forEach((responses, index) => {
+    logContent += `Model ${index + 1}:\n`;
+    responses.forEach((response, i) => {
+      logContent += `Prompt ${i + 1} response:\n${response}\n\n`;
+    });
+    logContent += `Performance score: ${results.performanceScores[index]}\n\n`;
+  });
+
+  logContent += `Top Response:\n${results.topResponse}\n`;
+
+  await fs.writeFile('results.log', logContent);
 }
 
 async function runDemo() {
@@ -47,13 +60,17 @@ async function runDemo() {
     prompts,
     evaluator,
     model => model.name,
-    4 // number of worker threads
+    4
   );
   console.timeEnd("Parallel Execution");
 
   console.log("\nResults:");
   console.log("Top response:", parallelResult.topResponse);
   console.log("Performance scores:", parallelResult.performanceScores);
+  
+  // Write detailed results to file
+  await writeResultsToFile(parallelResult);
+  console.log("\nDetailed results have been written to results.log");
 }
 
 runDemo().catch(console.error);

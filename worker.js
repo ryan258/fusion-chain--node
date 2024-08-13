@@ -39,16 +39,26 @@ async function callOllama(systemPrompt, userPrompt) {
 async function processModel(model, prompts) {
   const outputs = [];
   const contextFilledPrompts = [];
+  let previousOutput = '';
 
-  for (const prompt of prompts) {
-    let filledPrompt = prompt;
+  for (let i = 0; i < prompts.length; i++) {
+    let filledPrompt = prompts[i];
     for (const [key, value] of Object.entries(context)) {
       filledPrompt = filledPrompt.replace(new RegExp(`{{${key}}}`, 'g'), String(value));
     }
+    
+    // Replace {{output[-1]}} with the previous output
+    filledPrompt = filledPrompt.replace('{{output[-1]}}', previousOutput);
+    
     contextFilledPrompts.push(filledPrompt);
+
+    console.log(`Processing prompt ${i + 1} for model ${model.name}:`, filledPrompt);
 
     const result = await callOllama(model.systemPrompt, filledPrompt);
     outputs.push(result);
+    previousOutput = result;
+
+    console.log(`Output ${i + 1} for model ${model.name}:`, result);
   }
 
   return [outputs, contextFilledPrompts];
@@ -59,9 +69,11 @@ async function processModels() {
   const allContextFilledPrompts = [];
 
   for (const model of models) {
+    console.log(`Starting processing for model: ${model.name}`);
     const [outputs, contextFilledPrompts] = await processModel(model, prompts);
     allOutputs.push(outputs);
     allContextFilledPrompts.push(contextFilledPrompts);
+    console.log(`Finished processing for model: ${model.name}`);
   }
 
   parentPort.postMessage({ outputs: allOutputs, contextFilledPrompts: allContextFilledPrompts });
