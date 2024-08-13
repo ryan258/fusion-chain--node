@@ -138,6 +138,67 @@ You can customize the demos by modifying:
 
 FusionChain can be extended to work with various AI models and APIs. The `callable` function in the demos shows how to integrate with Ollama, but this can be adapted to work with other AI services or local models.
 
+## Roadmap
+
+Here's our plan for future improvements and features:
+
+1. **Parallel Execution**
+   - Implement the `runParallel` method in the `FusionChain` class
+   - Optimize for performance with large numbers of models/agents
+
+2. **Enhanced Evaluation Metrics**
+   - Develop more sophisticated evaluation functions for each demo
+   - Implement ROUGE scores for the summarization demo
+   - Create a coherence metric for the creative writing demo
+   - Add customizable weighting for different evaluation criteria
+
+3. **Model/Agent Management**
+   - Create a Model/Agent class for better encapsulation of model properties and methods
+   - Implement a model/agent factory for easy creation and management of different types of models/agents
+
+4. **Prompt Template System**
+   - Develop a more robust prompt template system with variable interpolation
+   - Add support for conditional prompt segments
+
+5. **Integration with More AI Services**
+   - Add support for OpenAI's GPT models
+   - Integrate with Hugging Face's model hub
+   - Create adapters for other popular AI services
+
+6. **Web Interface**
+   - Develop a simple web UI for running demos and visualizing results
+   - Create an interactive playground for experimenting with FusionChain
+
+7. **Documentation and Tutorials**
+   - Write comprehensive API documentation
+   - Create step-by-step tutorials for common use cases
+   - Develop a quickstart guide for new users
+
+8. **Testing and Reliability**
+   - Implement unit tests for core functionality
+   - Add integration tests for each demo
+   - Set up continuous integration (CI) pipeline
+
+9. **Performance Optimization**
+   - Profile and optimize code for better performance
+   - Implement caching mechanisms for repeated operations
+
+10. **Error Handling and Logging**
+    - Improve error handling throughout the codebase
+    - Implement a logging system for better debugging and monitoring
+
+11. **Community and Collaboration Features**
+    - Set up a system for sharing and importing custom models/agents
+    - Create a marketplace for evaluation functions and prompt templates
+
+12. **Extensibility**
+    - Develop a plugin system for easy extension of FusionChain's capabilities
+    - Create hooks for custom pre- and post-processing of inputs and outputs
+
+We welcome contributions in any of these areas! If you're interested in working on one of these features, please open an issue to discuss your plans before submitting a pull request.
+
+[Remaining sections (Contributing, License, Acknowledgments) stay the same]
+
 ## Contributing
 
 Contributions to FusionChain are welcome! Please feel free to submit a Pull Request.
