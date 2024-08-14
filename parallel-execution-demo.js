@@ -11,7 +11,7 @@ const generateModels = (count) => {
 const models = generateModels(20);
 
 const context = {
-  task: "Analyze the existential conflict of artificial intelligence is likely to haveon society"
+  task: "Analyze the impact of artificial intelligence on society"
 };
 
 const prompts = [
@@ -31,8 +31,12 @@ async function evaluator(outputs) {
   return [topResponse, scores];
 }
 
-async function writeResultsToFile(results) {
-  let logContent = "Detailed Results:\n\n";
+async function appendResultsToFile(results) {
+  const timestamp = new Date().toISOString();
+  let logContent = `\n\n========== Run at ${timestamp} ==========\n\n`;
+  
+  logContent += `Context: ${JSON.stringify(context)}\n\n`;
+  logContent += `Prompts:\n${prompts.join('\n')}\n\n`;
   
   results.allPromptResponses.forEach((responses, index) => {
     logContent += `Model ${index + 1}:\n`;
@@ -43,8 +47,9 @@ async function writeResultsToFile(results) {
   });
 
   logContent += `Top Response:\n${results.topResponse}\n`;
+  logContent += `\n========== End of Run ==========\n`;
 
-  await fs.writeFile('results.log', logContent);
+  await fs.appendFile('results.log', logContent);
 }
 
 async function runDemo() {
@@ -68,9 +73,9 @@ async function runDemo() {
   console.log("Top response:", parallelResult.topResponse);
   console.log("Performance scores:", parallelResult.performanceScores);
   
-  // Write detailed results to file
-  await writeResultsToFile(parallelResult);
-  console.log("\nDetailed results have been written to results.log");
+  // Append detailed results to file
+  await appendResultsToFile(parallelResult);
+  console.log("\nDetailed results have been appended to results.log");
 }
 
 runDemo().catch(console.error);
